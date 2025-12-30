@@ -28,9 +28,9 @@ func part2(instructionLines []string) int {
 		totalZeros += zeroPasses
 
 		fmt.Printf("Debug: CURRENT POSITION after instruction: %v == %v. zeroPasses: %v\n\n", line, currentPosition, zeroPasses)
-		//if currentPosition == 0 {
-		//	totalZeros++
-		//}
+		if currentPosition == 0 {
+			totalZeros++
+		}
 	}
 
 	return totalZeros
@@ -51,10 +51,7 @@ func normalizeToDialBounds(potentialEndPosition int, dialMax int, zeroPasses int
 	fmt.Printf("Debug: MIGHT BE OOB: %v\n", potentialEndPosition)
 
 	// break condition
-	if potentialEndPosition == 0 {
-		zeroPasses++ // one more here
-		return potentialEndPosition, zeroPasses
-	} else if potentialEndPosition > 0 && potentialEndPosition <= dialMax {
+	if potentialEndPosition >= 0 && potentialEndPosition <= dialMax {
 		return potentialEndPosition, zeroPasses
 	}
 
@@ -63,15 +60,15 @@ func normalizeToDialBounds(potentialEndPosition int, dialMax int, zeroPasses int
 	if potentialEndPosition < 0 {
 		endPosition = dialMax + 1 + potentialEndPosition
 
-		//if endPosition != 0 { // don't double-count if ends on zero
-		zeroPasses++
-		//}
+		if endPosition != 0 { // don't double-count if ends on zero
+			zeroPasses++
+		}
 	} else if potentialEndPosition > dialMax {
 		endPosition = potentialEndPosition - (dialMax + 1)
 
-		//if endPosition != 0 { // don't double-count if ends on zero
-		zeroPasses++
-		//}
+		if endPosition != 0 { // don't double-count if ends on zero
+			zeroPasses++
+		}
 	} else {
 		//println("THIS SHOULDN'T HAVE HAPPENED, bad normalizeToDialBounds condition")
 		panic("THIS SHOULDN'T HAVE HAPPENED, bad normalizeToDialBounds condition")
