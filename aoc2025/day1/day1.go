@@ -7,8 +7,9 @@ import (
 )
 
 func Main() {
-	inputLines := util.ReadInputFileToStringSlice("day1/sample")
-	//inputLines := util.ReadInputFileToStringSlice("day1/input")
+	//inputLines := util.ReadInputFileToStringSlice("day1/sample")
+	//inputLines := util.ReadInputFileToStringSlice("day1/warningsample")
+	inputLines := util.ReadInputFileToStringSlice("day1/input")
 	totalZeros := part2(inputLines)
 
 	fmt.Printf(">>>>>Total Zeros: %v\n", totalZeros)
@@ -27,10 +28,12 @@ func part2(instructionLines []string) int {
 
 		totalZeros += zeroPasses
 
-		fmt.Printf("Debug: CURRENT POSITION after instruction: %v == %v. zeroPasses: %v\n\n", line, currentPosition, zeroPasses)
+		fmt.Printf("Debug: CURRENT POSITION after instruction: %v == %v. zeroPasses: %v\n", line, currentPosition, zeroPasses)
 		if currentPosition == 0 {
+			fmt.Printf("Debug: ENDED ON ZERO, INCREMENTING totalZeros: +1\n")
 			totalZeros++
 		}
+		fmt.Printf("Debug: totalZeros: %v\n\n", totalZeros)
 	}
 
 	return totalZeros
@@ -42,7 +45,13 @@ func rotate(dialMax int, currentPosition int, instruction string) (int, int) {
 
 	mightBeOOB := currentPosition + rotationInt
 
-	endPosition, zeroPasses := normalizeToDialBounds(mightBeOOB, dialMax, 0) // reset zeroPasses to 0 for every new instruction
+	startingZeroPasses := 0 // reset zeroPasses to 0 for every new instruction
+	if currentPosition == 0 && rotationInt < 0 {
+		// unless we're already at 0 & going left, in which case we'll double-count the starting 0, so subtract 1!
+		startingZeroPasses = -1
+	}
+
+	endPosition, zeroPasses := normalizeToDialBounds(mightBeOOB, dialMax, startingZeroPasses)
 	return endPosition, zeroPasses
 }
 
@@ -60,9 +69,9 @@ func normalizeToDialBounds(potentialEndPosition int, dialMax int, zeroPasses int
 	if potentialEndPosition < 0 {
 		endPosition = dialMax + 1 + potentialEndPosition
 
-		if endPosition != 0 { // don't double-count if ends on zero
-			zeroPasses++
-		}
+		//if endPosition != 0 { // *don't* do this – would miss counting one pass in L cases that end on zero
+		zeroPasses++
+		//}
 	} else if potentialEndPosition > dialMax {
 		endPosition = potentialEndPosition - (dialMax + 1)
 
