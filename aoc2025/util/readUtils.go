@@ -22,6 +22,28 @@ func ReadInputFileToStringSlice(filepath string) []string {
 	return lines
 }
 
+func ReadSingleLineInputFileToString(filepath string) string {
+	inputFile, _ := os.Open(filepath)
+	defer inputFile.Close()
+	var singleLineInput string
+
+	scanner := bufio.NewScanner(inputFile)
+
+	// read 1 line
+	if scanner.Scan() {
+		singleLineInput = scanner.Text()
+	} else {
+		panic("No first line!")
+	}
+
+	// check for another line; if found, panic
+	if scanner.Scan() {
+		panic("Found more than one line!")
+	}
+
+	return singleLineInput
+}
+
 func SplitAtFirstEmptyLine(lines []string) ([]string, []string) {
 	firstEmptyLineIndex := slices.Index(lines, "")
 	return lines[:firstEmptyLineIndex], lines[firstEmptyLineIndex+1:]
