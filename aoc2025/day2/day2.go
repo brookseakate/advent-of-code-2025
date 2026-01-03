@@ -12,7 +12,8 @@ func Main() {
 	inputLine := util.ReadSingleLineInputFileToString("day2/input")
 
 	idRanges := parseIdRanges(inputLine)
-	invalidIds := collectInvalidIds(idRanges)
+	//invalidIds := collectTwiceRepeatingSubstringIds(idRanges) // part 1
+	invalidIds := collectArbitraryRepeatingSubstringIds(idRanges) // part 2
 
 	var invalidIdTotal int64
 	for _, invalidId := range invalidIds {
@@ -50,7 +51,8 @@ func parseIdRanges(inputLine string) [][]int64 {
 	return idRanges
 }
 
-func collectInvalidIds(idRanges [][]int64) []int64 {
+// part 1 method; returns ids composed of a substring repeated exactly twice
+func collectTwiceRepeatingSubstringIds(idRanges [][]int64) []int64 {
 	invalidIds := []int64{}
 
 	for _, idRange := range idRanges {
@@ -61,6 +63,35 @@ func collectInvalidIds(idRanges [][]int64) []int64 {
 
 			if firstHalf == lastHalf {
 				invalidIds = append(invalidIds, id)
+			}
+		}
+	}
+	return invalidIds
+}
+
+// part 2 method: returns ids composed of a substring repeated any number of times
+func collectArbitraryRepeatingSubstringIds(idRanges [][]int64) []int64 {
+	invalidIds := []int64{}
+
+	for _, idRange := range idRanges {
+		for _, id := range idRange {
+			// // Nope! backreference is unsupported in go; use a different approach
+			//regexArbitraryRepeating := regexp.MustCompile("(\\d+)\\1+")
+			//if matches := regexArbitraryRepeating.MatchString(strconv.FormatInt(id, 10)); matches {
+			//	invalidIds = append(invalidIds, id)
+			//}
+
+			// iterate substrings (half-string down to 1 char), check that string contains only substring matches
+			idString := strconv.FormatInt(id, 10)
+			for i := len(idString) / 2; i > 0; i-- {
+				pattern := idString[0:i]
+				strippedString := strings.ReplaceAll(idString, pattern, "")
+
+				if len(strippedString) == 0 {
+					fmt.Printf("Debug: invalidId: %v\n", id)
+					invalidIds = append(invalidIds, id)
+					break
+				}
 			}
 		}
 	}
