@@ -1,6 +1,6 @@
 package main
 
-import today "aoc2025/day2"
+import today "aoc2025/day3"
 
 func main() {
 	today.Main()
