@@ -75,12 +75,6 @@ func collectArbitraryRepeatingSubstringIds(idRanges [][]int64) []int64 {
 
 	for _, idRange := range idRanges {
 		for _, id := range idRange {
-			// // Nope! backreference is unsupported in go; use a different approach
-			//regexArbitraryRepeating := regexp.MustCompile("(\\d+)\\1+")
-			//if matches := regexArbitraryRepeating.MatchString(strconv.FormatInt(id, 10)); matches {
-			//	invalidIds = append(invalidIds, id)
-			//}
-
 			// iterate substrings (half-string down to 1 char), check that string contains only substring matches
 			idString := strconv.FormatInt(id, 10)
 			for i := len(idString) / 2; i > 0; i-- {
